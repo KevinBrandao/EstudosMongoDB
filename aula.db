@@ -1,0 +1,164 @@
+// Listando os bancos de dados já existentes
+show dbs;
+
+// Selecionando um banco de dados para trabalhar
+// (se ainda não existir, será criado)
+use estoque;
+
+// Inserindo um documento em uma coleção chamada "produtos"
+db.produtos.insertOne({
+	nome: "Vassoura de piaçava",
+	preco: 27.80,
+	categoria: "Limpeza"
+});
+
+// Exibindo todas as collections de um banco de dados
+show collections;
+
+// Outra inserção
+db.produtos.insertOne({
+  nome: "Café",
+  marca: "Dubom",
+  quantidade: 500,
+  unidade: "g",
+  preco: 17.47,
+  categoria: "Alimentos e bebidas",
+  estoque: 52
+});
+
+// Mais uma inserção
+db.produtos.insertOne({
+  nome_oficial: "República Francesa",
+  nome_comum: "França",
+  capital: "Paris",
+  continente: "Europa",
+  chefe_estado: "Emmanuel Macron",
+  lingua_oficial: "francês"
+});
+
+
+// Exibindo todos os produtos cadastrados
+db.produtos.find();
+
+// Exibindo o produto "Café"
+db.produtos.find({ nome: "Café" });
+
+// Inserindo um produto com subdocumento (no caso, o fornecedor)
+db.produtos.insertOne({
+  nome: "Biscoito",
+  marca: "Crocantão",
+  quantidade: 200,
+  unidade: "g",
+  preco: 7.19,
+  categoria: "Alimentos e bebidas",
+  estoque: 100,
+  fornecedor: {
+    nome: "Indústria de Alimentos Bacana S/A",
+    cnpj: "01.234.567/0001-89",
+    telefone: "(36) 3666-0421",
+    email: "contato@bacana.ind.br",
+    representante: "Astolfo Alvarenga"
+  }
+});
+
+// Mais um produto com subdocumento
+db.produtos.insertOne({
+  nome: "Doce de leite",
+  marca: "Mineirim",
+  preco: 15.87,
+  fornecedor: {
+    nome: "Indústria de Alimentos Bacana S/A",
+    cnpj: "01.234.567/0001-89"
+  },
+  informacao_nutricional: {
+    acucares: "75g",
+    gordura_saturada: "12g",
+    proteina: "13g"
+  }
+});
+
+// Listando os produtos em ordem alfabética de nome (ascendente = 1)
+db.produtos.find().sort({ nome: 1 });
+
+// Listando os produtos em ordem alfabética inversa de nome (descendente = -1)
+db.produtos.find().sort({ nome: -1 });
+
+// Listando os produtos de um fornecedor filtrando por CNPJ
+db.produtos.find({ "fornecedor.cnpj": "01.234.567/0001-89" });
+
+// Produto com mais de um fornecedor (vetor de subdocumentos)
+db.produtos.insertOne({
+  produto: "Paçoca",
+  marca: "Junina",
+  preco: 20.65,
+  fornecedor: [
+    {
+      nome: "Indústria de Alimentos Bacana S/A",
+      cnpj: "01.234.567/0001-89"
+    },
+    {
+      nome: "Distribuidora de Doces Pingo de Mel Ltda.",
+      cnpj: "98.765.432/0001-10"
+    }
+  ]
+});
+
+
+//  INserção de  produto com campo multivalorado (mais de uma categoria)
+db.produtos.insertOne({
+nome:"Bicarbonato de Sodio",
+marca:"Q-rende",
+preco: 3.45,
+	categoria: [
+		"Alimento e bebidas",
+		"Limpeza"
+	],
+	fornecedor: {
+		nome: "Distribuidora de doces pingo de mel ltda.",
+		cnpj: "98.345.354/0001-10"
+	}	
+});
+
+
+
+// Fazendo a busca por todos os produtos da categoria "Limpeza"
+db.produtos.find({ categoria: { "Limpeza" }});
+
+// Buscando produtos que não são da categoria "Limpeza"
+// $ne = not equal (não igual, diferente)
+db.produtosfind({ categoria: { $ne: "Limpeza" } });
+
+// Listando apenas produtos que não tem o campo "categoria"
+db.produtos.find({ categoria: { $exists: false } });
+
+
+
+// Buscando poprodutos cuja preço é maior que 20
+// $gt: greater than (maior que)
+// $lt: lesser than (maior que)
+// $gte: greater than or equal (maior ou igual)
+// $lte: lesser than or equal (menor ou igual)
+db.produtos.find({ preco: {$gt: 20 } });
+
+
+// Adicionando um novo campo a um documento já existente
+db.produtos.updateOne(
+	{produto: "Paçoca"},
+	{ 
+	$set: { categoria: "Alimentos e bebidas" }
+	}
+);
+
+
+// Renomeando o campo "produto" para "nome" no produto Paçoca, (troca o nome do campo)
+db.produtos.updateOne(
+	{ produto: "Paçoca" },
+	{
+	 $rename: { produto: "nome" }
+	}
+);
+
+
+// procurando pelo produto Café e exibindo apenas seu _id
+db.produtos.find({ nome: "Café" }, { _id: 1});
+
