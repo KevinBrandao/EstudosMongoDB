@@ -162,3 +162,69 @@ db.produtos.updateOne(
 // procurando pelo produto Café e exibindo apenas seu _id
 db.produtos.find({ nome: "Café" }, { _id: 1});
 
+/// Renomeando o campo "produto" para "nome" no produto Paçoca
+db.produtos.updateOne(
+  { produto: "Paçoca"},
+  {
+		$rename:{ produto: "none"}
+  }
+);
+ 
+ 
+// Procurando  pelo produto café e exibindo apenas seu _id
+db.produtos.find({ nome: "Café"}, { _id: 1});
+ 
+////Procurando o produto Café pelo seu _id e alterando o valor
+// de campos já existentes
+ 
+db.produtos.updateOne(
+	{  _id: ObjectId('65e8ef21671774b3f26f008a') },
+	{ $set: {
+		marca: "Torra Premium",
+		preco: 32.48
+	}}
+);
+ 
+db.produtos.updateOne(
+	{  _id: ObjectId('65e8ef21671774b3f26f008a') },
+	{ $set: {
+		nome: "Café",
+		preco: 32.48
+	}}
+);
+ 
+ 
+///Diminuindo o estoque do produto Biscoito
+// $inc: aumenta (número positivo) ou diminui (valor negativo)
+//o valor de um campo numérico
+db.produtos.updateOne(
+	{ nome: "Biscoito"},
+	{
+		$inc: { estoque: -10 }
+	}
+);
+ 
+// Aumentando o preço do Doce de Leite em 2,50
+db.produtos.updateOne(
+	{ nome:  "Doce de leite"},
+	{
+		$inc: { preco: 2.50}
+	}
+);
+ 
+ 
+//Aumentando em 10% todos os preços dos produtos que tem o
+// campo "preco"
+// $mul: multiplica o valor de um campo numérico pelo número especificado
+db.produtos.updateMany(
+	{ preco: { $exists: true } },
+	{
+		$mul: { preco: 1.1}
+	}
+);
+ 
+// Excluindo a "intrusa" República Francesa
+db.produtos.deleteOne({ nome_oficial: "República Francesa"});
+ 
+// Excluindo todos os produtos cujo preço seja menor que 20
+db.produtos.deleteMany({ preco: { $lt: 20 } });
