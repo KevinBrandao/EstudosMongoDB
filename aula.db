@@ -103,128 +103,97 @@ db.produtos.insertOne({
   ]
 });
 
-
-//  INserção de  produto com campo multivalorado (mais de uma categoria)
+// Inserção de produto com campo multivalorado (mais de uma categoria)
 db.produtos.insertOne({
-nome:"Bicarbonato de Sodio",
-marca:"Q-rende",
-preco: 3.45,
-	categoria: [
-		"Alimento e bebidas",
-		"Limpeza"
-	],
-	fornecedor: {
-		nome: "Distribuidora de doces pingo de mel ltda.",
-		cnpj: "98.345.354/0001-10"
-	}	
+  nome: "Bicarbonato de Sódio",
+  marca: "Q-Rende",
+  preco: 3.45,
+  categoria: [
+    "Alimentos e bebidas",
+    "Limpeza"
+  ],
+  fornecedor: {
+    nome: "Distribuidora de Doces Pingo de Mel Ltda.",
+    cnpj: "98.765.432/0001-10"
+  }
 });
 
-
-
 // Fazendo a busca por todos os produtos da categoria "Limpeza"
-db.produtos.find({ categoria: { "Limpeza" }});
+db.produtos.find({ categoria: "Limpeza" });
 
-// Buscando produtos que não são da categoria "Limpeza"
+// Buscando produtos que NÃO SÃO da categoria "Limpeza"
 // $ne = not equal (não igual, diferente)
-db.produtosfind({ categoria: { $ne: "Limpeza" } });
+db.produtos.find({ categoria: { $ne: "Limpeza" } });
 
-// Listando apenas produtos que não tem o campo "categoria"
+// Listando apenas produtos que NÃO TÊM o campo "categoria"
 db.produtos.find({ categoria: { $exists: false } });
 
-
-
-// Buscando poprodutos cuja preço é maior que 20
+// Buscando por produtos cujo preço é maior que 20
 // $gt: greater than (maior que)
-// $lt: lesser than (maior que)
+// $lt: lesser than (menor que)
 // $gte: greater than or equal (maior ou igual)
 // $lte: lesser than or equal (menor ou igual)
-db.produtos.find({ preco: {$gt: 20 } });
-
+db.produtos.find({ preco: { $gt: 20 } });
 
 // Adicionando um novo campo a um documento já existente
 db.produtos.updateOne(
-	{produto: "Paçoca"},
-	{ 
-	$set: { categoria: "Alimentos e bebidas" }
-	}
-);
-
-
-// Renomeando o campo "produto" para "nome" no produto Paçoca, (troca o nome do campo)
-db.produtos.updateOne(
-	{ produto: "Paçoca" },
-	{
-	 $rename: { produto: "nome" }
-	}
-);
-
-
-// procurando pelo produto Café e exibindo apenas seu _id
-db.produtos.find({ nome: "Café" }, { _id: 1});
-
-/// Renomeando o campo "produto" para "nome" no produto Paçoca
-db.produtos.updateOne(
-  { produto: "Paçoca"},
+  { produto: "Paçoca" },
   {
-		$rename:{ produto: "none"}
+    $set: { categoria: "Alimentos e bebidas" }
   }
 );
- 
- 
-// Procurando  pelo produto café e exibindo apenas seu _id
-db.produtos.find({ nome: "Café"}, { _id: 1});
- 
-////Procurando o produto Café pelo seu _id e alterando o valor
+
+// Renomeando o campo "produto" para "nome" no produto Paçoca
+db.produtos.updateOne(
+  { produto: "Paçoca" },
+  {
+    $rename: { produto: "nome" }
+  }
+);
+
+// Procurando pelo produto Café e exibindo apenas seu _id
+db.produtos.find({ nome: "Café" }, { _id: 1 } );
+
+// Procurando o produto Café pelo seu _id e alterando o valor
 // de campos já existentes
- 
 db.produtos.updateOne(
-	{  _id: ObjectId('65e8ef21671774b3f26f008a') },
-	{ $set: {
-		marca: "Torra Premium",
-		preco: 32.48
-	}}
+  { _id: ObjectId('65e326be2d10d062e9283671') },
+  { $set: {
+    marca: "Torra Premium",
+    preco: 32.48
+  }}
 );
- 
-db.produtos.updateOne(
-	{  _id: ObjectId('65e8ef21671774b3f26f008a') },
-	{ $set: {
-		nome: "Café",
-		preco: 32.48
-	}}
-);
- 
- 
-///Diminuindo o estoque do produto Biscoito
+
+// Diminuindo o estoque do produto Biscoito
 // $inc: aumenta (número positivo) ou diminui (valor negativo)
-//o valor de um campo numérico
+// o valor de um campo numérico
 db.produtos.updateOne(
-	{ nome: "Biscoito"},
-	{
-		$inc: { estoque: -10 }
-	}
+  { nome: "Biscoito" },
+  {
+    $inc: { estoque: -10 }
+  }
 );
- 
-// Aumentando o preço do Doce de Leite em 2,50
+
+// Aumentando o preço do Doce de Leite em 2.50
 db.produtos.updateOne(
-	{ nome:  "Doce de leite"},
-	{
-		$inc: { preco: 2.50}
-	}
+  { nome: "Doce de leite" },
+  {
+    $inc: { preco: 2.50 }
+  }
 );
- 
- 
-//Aumentando em 10% todos os preços dos produtos que tem o
+
+// Aumentando em 10% todos os preços dos produtos que têm o
 // campo "preco"
 // $mul: multiplica o valor de um campo numérico pelo número especificado
 db.produtos.updateMany(
-	{ preco: { $exists: true } },
-	{
-		$mul: { preco: 1.1}
-	}
+  { preco: { $exists: true } },
+  {
+    $mul: { preco: 1.1 }
+  }
 );
- 
+
 // Excluindo a "intrusa" República Francesa
-db.produtos.deleteOne({ nome_oficial: "República Francesa"});
- 
+db.produtos.deleteOne({ nome_oficial: "República Francesa" });
+
 // Excluindo todos os produtos cujo preço seja menor que 20
 db.produtos.deleteMany({ preco: { $lt: 20 } });
